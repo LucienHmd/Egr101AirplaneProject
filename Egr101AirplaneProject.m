@@ -1,5 +1,6 @@
+
 Wpayload %Weight paylod
-N = 12 %Number of people
+N = 12; %Number of people
 Wcargo %Cargo weight 
 Wempty %Empty weight 
 Wgross %Gross weight 
