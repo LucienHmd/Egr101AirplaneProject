@@ -18,9 +18,9 @@ Vlanding = Vstall * 1.1; %Velocity Landing
 
 %CDi; %Induced drag coefficient 
 %CL_CRUISE; 
-%p_CRUISE; %air density at cruise altitude 
-%V_CRUISE;
-%AR; %aspect ratio
+p_CRUISE = 0.001066; %air density at cruise altitude (25000 feet)
+V_CRUISE = 600; % in feet/second
+AR = 8; %aspect ratio
 %CDo;
 %fuse_diameter;
 %T_CRUISE;
@@ -34,7 +34,7 @@ Vlanding = Vstall * 1.1; %Velocity Landing
 %WrF;
 %Tupar_ratio;
 %Sweep_angle;
-%b_wing;
+b_wing = 132;
 %fuse_wid;  %fuselage width 
 %Croot; %Chord root 
 %Ctip; %Chord tip 
@@ -47,10 +47,18 @@ Vlanding = Vstall * 1.1; %Velocity Landing
 
 fprintf('Iteration 1');
 Wfuel = (0.15 + 3.33*10^(-5) * (R - 1000)); % Calculate Fuel Weight
-Wgross = (Wpayload) / (1-0.5-Wfuel); % Calculate Gross Weight to be used in calculations
+Wgross = (Wpayload) / (0.5-Wfuel); % Calculate Gross Weight to be used in calculations
 Wempty = 0.5 * Wgross;
 
 S = (2 * Wgross) / (CL_MAX * p_air * Vstall * Vstall);
+
+CL_CRUISE = Wgross / (0.5 * p_CRUISE * V_CRUISE * V_CRUISE * S);
+
+CDi = (CL_CRUISE * CL_CRUISE) / (pi * AR);
+CDo = 0.012 + (0.000667 * 17);
+CD = CDi + CDo;
+
+D_CRUISE = 0.5 * p_CRUISE * CD * V_CRUISE * V_CRUISE * S; % 4350 lbs drag O_O
 
 %CL = L/(.5)*(p_air)*(Vstall^2); 
 %Vlanding = Vstall * 1.1; 
