@@ -44,19 +44,56 @@ b_wing = 132;
 %SHT;
 %AHT;
 %LT;
+Iterations = 1;
+x = 1;
 
-fprintf('Iteration 1');
-Wfuel = (0.15 + 3.33*10^(-5) * (R - 1000)); % Calculate Fuel Weight
-Wgross = (Wpayload) / (0.5-Wfuel); % Calculate Gross Weight to be used in calculations
-Wempty = 0.5 * Wgross;
+WfuelCoefficent = (0.15 + 3.33*10^(-5) * (R - 1000)); % Calculate Fuel Weight
+Wgross = (Wpayload) / (0.5- WfuelCoefficent); % Calculate Gross Weight to be used in calculations
+Wfuel = (0.15 + (3.33*10^(-5)) * (R-1000)) * Wgross;
 
-S = (2 * Wgross) / (CL_MAX * p_air * Vstall * Vstall);
+while x == 1
+    if Iterations > 1
+        Wgross = (Wpayload + Wfuel_Real) / 0.5;
+    end
+    Wempty = 0.5 * Wgross;
 
-CL_CRUISE = Wgross / (0.5 * p_CRUISE * V_CRUISE * V_CRUISE * S);
 
-CDi = (CL_CRUISE * CL_CRUISE) / (pi * AR)
+    S = (2 * Wgross) / (CL_MAX * p_air * Vstall * Vstall);
 
-CDo = 
+    CL_CRUISE = Wgross / (0.5 * p_CRUISE * V_CRUISE * V_CRUISE * S);
+
+    CDi = (CL_CRUISE * CL_CRUISE) / (pi * AR);
+    CDo = 0.012 + (0.000667 * 17);
+    CD = CDi + CDo;
+
+    D_CRUISE = 0.5 * p_CRUISE * CD * V_CRUISE * V_CRUISE * S; % 4350 lbs drag O_O
+
+
+    % ENGINE CALCULATIONS (THIS IS WHERE TOTAL FUEL WEIGHT IS CALCULATED)
+    % Engine is TAY 651 (15400 lbs thrust @ 0.69 SFC)
+    ApproxEngineThrust = D_CRUISE / (0.9 * (p_CRUISE / p_air)); %10778 lbs thrust
+    SFC = 0.69;
+    EngineThrust = 15400;
+    F_flow = SFC * EngineThrust;
+    WF_Cruise = SFC * D_CRUISE * (R / V_CRUISE);
+    WF_Reserve = (45/60) * SFC * D_CRUISE;
+    Wfuel_Real = WF_Cruise + WF_Reserve;
+    
+    
+    
+    x = input('enter 1 if you want another iteration');
+end
+
+
+% WING PLANFORM CALCULATIONS
+
+
+% ESTIMATE HORIZONTAL AND VERTICAL TAIL SIZE
+
+
+% COST
+
+
 %CL = L/(.5)*(p_air)*(Vstall^2); 
 %Vlanding = Vstall * 1.1; 
 %S= (2*Wgross)/(CL_MAX)*(p_air)*(Vstall^2);
